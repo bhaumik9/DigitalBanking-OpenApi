@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: imagine@900
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/DigitalBanking
+  jpa:
+    generate-ddl: true
+    defer-datasource-initialization: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+otp:
+  default: Your otp is
+  registration: Your otp for Registration is
+  login: Your otp for Login is
+
