@@ -6,6 +6,7 @@ import com.casestudy.digitalbankingopenapi.enums.CustomerStatus;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import com.casestudy.digitalbankingopenapi.util.Util;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
+import openapi.model.CreateCustomerRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,14 @@ public class CustomerService {
         return String.valueOf(randomValue);
     }
 
-    public String add(CustomerDto customerDto) {
-        Customer customer = customerDto.toEntity();
+    public String add(CreateCustomerRequestDto customerDto) {
+        Customer customer=new Customer();
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setUserName(customerDto.getUserName());
+        customer.setPhoneNumber(customerDto.getPhoneNumber());
+        customer.setEmail(customerDto.getEmail());
+        customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
         customer.setStatus(CustomerStatus.ACTIVE.toString());
         customer.setExternalId(customer.getUserName() + "_ext");
         customer.setCreatedBy(System.getProperty("user.name"));
@@ -52,25 +59,17 @@ public class CustomerService {
         if (!(Objects.isNull(customerDto.getLastName()) || customerDto.getLastName().isEmpty())) {
             customer.setLastName(customerDto.getLastName());
         }
-        if (!(Objects.isNull(customerDto.getPhoneNumber()) || customerDto.getPhoneNumber().isEmpty())) {
-            if (requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
+        if ((!(Objects.isNull(customerDto.getPhoneNumber()) || customerDto.getPhoneNumber().isEmpty())) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
                 customer.setPhoneNumber(customerDto.getPhoneNumber());
-            }
         }
-        if (!(Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty())) {
-            if (requestValidation.validateEmail(customerDto.getEmail())) {
+        if ((!(Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty())) && requestValidation.validateEmail(customerDto.getEmail())) {
                 customer.setEmail(customerDto.getEmail());
-            }
         }
-        if (!(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().isEmpty())) {
-            if (requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage())) {
+        if ((!(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().isEmpty())) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage())) {
                 customer.setPreferredLanguage(customerDto.getPreferredLanguage());
-            }
         }
-        if (!(Objects.isNull(customerDto.getStatus()) || customerDto.getStatus().isEmpty())) {
-            if (requestValidation.validateStatus(customerDto.getStatus())) {
+        if ((!(Objects.isNull(customerDto.getStatus()) || customerDto.getStatus().isEmpty())) && requestValidation.validateStatus(customerDto.getStatus())) {
                 customer.setStatus(customerDto.getStatus());
-            }
         }
         customerRepo.save(customer);
     }

@@ -1,9 +1,9 @@
 package com.casestudy.digitalbankingopenapi.entity;
 
-import com.casestudy.digitalbankingopenapi.dto.SecurityQuestionsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import openapi.model.SecurityQuestionDto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -32,14 +32,17 @@ public class SecurityQuestion {
     List<CustomerSecurityQuestions> customerSecurityQuestions = new ArrayList<>();
 
     public SecurityQuestion(String question) {
-        this.securityQuestionText=question;
+        this.securityQuestionText = question;
     }
 
     public SecurityQuestion() {
 
     }
 
-    public SecurityQuestionsDto toDto(){
-        return new SecurityQuestionsDto(id,securityQuestionText);
+    public SecurityQuestionDto toDto() {
+        SecurityQuestionDto securityQuestionDto = new SecurityQuestionDto();
+        securityQuestionDto.setSecurityQuestionId(id);
+        securityQuestionDto.setSecurityQuestionText(securityQuestionText);
+        return securityQuestionDto;
     }
 }

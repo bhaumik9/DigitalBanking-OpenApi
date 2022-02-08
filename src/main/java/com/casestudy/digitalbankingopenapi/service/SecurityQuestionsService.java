@@ -1,8 +1,5 @@
 package com.casestudy.digitalbankingopenapi.service;
 
-import com.casestudy.digitalbankingopenapi.dto.CustomerSecurityQuestionsResponse;
-import com.casestudy.digitalbankingopenapi.dto.SecurityQuestionsDto;
-import com.casestudy.digitalbankingopenapi.dto.SecurityQuestionsListResponse;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerSecurityQuestions;
 import com.casestudy.digitalbankingopenapi.entity.SecurityQuestion;
@@ -10,6 +7,9 @@ import com.casestudy.digitalbankingopenapi.exception.SecurityQuestionsNotFound;
 import com.casestudy.digitalbankingopenapi.repository.CustomerSecurityQuestionsRepo;
 import com.casestudy.digitalbankingopenapi.repository.SecurityQuestionsRepo;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
+import openapi.model.GetCustomerSecurityQuestionResponseDto;
+import openapi.model.GetSecurityQuestionsResponseDto;
+import openapi.model.SecurityQuestionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,10 +36,10 @@ public class SecurityQuestionsService {
         if (list.isEmpty()) {
             throw new SecurityQuestionsNotFound();
         }
-        SecurityQuestionsListResponse listResponse = new SecurityQuestionsListResponse();
+        GetSecurityQuestionsResponseDto listResponse = new GetSecurityQuestionsResponseDto();
         list.forEach(l -> {
-            SecurityQuestionsDto securityQuestionsDto1 = l.toDto();
-            listResponse.addQuestion(securityQuestionsDto1);
+            SecurityQuestionDto securityQuestionDto=l.toDto();
+            listResponse.addSecurityQuestionsItem(securityQuestionDto);
         });
         return ResponseEntity.ok().body(listResponse);
     }
@@ -57,8 +57,8 @@ public class SecurityQuestionsService {
         if (customerSecurityQuestionsList.isEmpty()) {
             throw new SecurityQuestionsNotFound();
         }
-        CustomerSecurityQuestionsResponse response = new CustomerSecurityQuestionsResponse();
-        customerSecurityQuestionsList.forEach(l -> response.addData(l.toDto()));
+        GetCustomerSecurityQuestionResponseDto response = new GetCustomerSecurityQuestionResponseDto();
+        customerSecurityQuestionsList.forEach(l -> response.addSecurityQuestionsItem(l.toDto()));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

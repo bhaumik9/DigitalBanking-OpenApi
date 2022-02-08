@@ -3,6 +3,7 @@ package com.casestudy.digitalbankingopenapi.controller;
 import com.casestudy.digitalbankingopenapi.dto.CustomerDto;
 import com.casestudy.digitalbankingopenapi.service.CustomerService;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
+import openapi.model.CreateCustomerRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/client-api/v1/customers", produces = "application/json")
-    ResponseEntity<Object> addCustomer(@Valid @RequestBody CustomerDto customerDto) {
+    ResponseEntity<Object> addCustomer(@Valid @RequestBody CreateCustomerRequestDto customerDto) {
         requestValidation.validateCustomer(customerDto);
         String id = customerService.add(customerDto);
         if (!Objects.isNull(id)) {

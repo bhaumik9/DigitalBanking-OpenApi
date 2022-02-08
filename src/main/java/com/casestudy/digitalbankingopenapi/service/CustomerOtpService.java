@@ -1,17 +1,18 @@
 package com.casestudy.digitalbankingopenapi.service;
 
-import com.casestudy.digitalbankingopenapi.dto.CustomerOtpDto;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerOtp;
 import com.casestudy.digitalbankingopenapi.repository.CustomerOtpRepo;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import lombok.NoArgsConstructor;
+import openapi.model.InitiateOtpRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.LOGIN;
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.REGISTRATION;
@@ -38,14 +39,13 @@ public class CustomerOtpService {
         this.customerOtpRepo = customerOtpRepo;
     }
 
-    public CustomerOtp getData(CustomerOtpDto customerOtpDto) {
+    public CustomerOtp getData(InitiateOtpRequestDto customerOtpDto) {
         String otp = customerService.generateOtp();
         String templateId = customerOtpDto.getTemplateId();
-        //TODO: USer concat operation
         String message;
-        if (templateId.equals(REGISTRATION)) {
+        if (!Objects.isNull(templateId) && templateId.equals(REGISTRATION)) {
             message = messageRegistration.concat(" ").concat(otp);
-        } else if (templateId.equals(LOGIN)) {
+        } else if (!Objects.isNull(templateId) && templateId.equals(LOGIN)) {
             message = messageLogin.concat(" ").concat(otp);
         } else {
             message = messageDefault.concat(" ").concat(otp);

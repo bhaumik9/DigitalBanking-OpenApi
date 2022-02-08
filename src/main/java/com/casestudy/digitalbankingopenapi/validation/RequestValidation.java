@@ -1,10 +1,10 @@
 package com.casestudy.digitalbankingopenapi.validation;
 
-import com.casestudy.digitalbankingopenapi.dto.CustomerDto;
-import com.casestudy.digitalbankingopenapi.dto.CustomerOtpDto;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.exception.*;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
+import openapi.model.CreateCustomerRequestDto;
+import openapi.model.InitiateOtpRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class RequestValidation {
         this.customerRepo = customerRepo;
     }
 
-    public void validateInitiateOtpRequest(CustomerOtpDto customerOtpDto) {
+    public void validateInitiateOtpRequest(InitiateOtpRequestDto customerOtpDto) {
         validateUserNameInDatabase(customerOtpDto.getUserName(),"otp");
         isValidTemplateId(customerOtpDto.getTemplateId());
     }
@@ -45,7 +45,7 @@ public class RequestValidation {
         throw new InvalidTemplateIdException();
     }
 
-    public void validateCustomer(CustomerDto customerDto) {
+    public void validateCustomer(CreateCustomerRequestDto customerDto) {
         validateUsernameInDatabase(customerDto.getUserName());
     }
 

@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CustomerNotFound extends RuntimeException {
-    String type;
+    final String type;
     public CustomerNotFound(String type) {
         super("Customer not found");
         this.type=type;

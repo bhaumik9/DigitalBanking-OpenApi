@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Objects;
+
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.*;
 
 @RestControllerAdvice
@@ -86,6 +88,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         ExceptionResponse exceptionResponse = null;
         String code = ex.getAllErrors().get(0).getCode();
         String message = ex.getAllErrors().get(0).getDefaultMessage();
+        if(Objects.isNull(message)){
+            message="default";
+        }
         if (code.equalsIgnoreCase("NotEmpty") || code.equalsIgnoreCase("NotNull")) {
             CustomerFieldMissing customerFieldMissing = new CustomerFieldMissing();
             exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, customerFieldMissing.getMessage());

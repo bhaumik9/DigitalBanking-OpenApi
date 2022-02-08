@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InvalidFieldException extends RuntimeException{
-    String message;
+    final String message;
     public InvalidFieldException(String message) {
         this.message=message;
     }
