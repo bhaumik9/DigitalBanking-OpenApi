@@ -7,6 +7,8 @@ import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import com.casestudy.digitalbankingopenapi.util.Util;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import openapi.model.CreateCustomerRequestDto;
+import openapi.model.CreateCustomerResponseDto;
+import openapi.model.PatchCustomerRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,8 @@ public class CustomerService {
         return String.valueOf(randomValue);
     }
 
-    public String add(CreateCustomerRequestDto customerDto) {
+    public CreateCustomerResponseDto add(CreateCustomerRequestDto customerDto) {
+        requestValidation.validateCustomer(customerDto);
         Customer customer=new Customer();
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
@@ -46,12 +49,14 @@ public class CustomerService {
         return insertIntoDatabase(customer);
     }
 
-    private String insertIntoDatabase(Customer customer) {
+    private CreateCustomerResponseDto insertIntoDatabase(Customer customer) {
+        CreateCustomerResponseDto createCustomerResponseDto=new CreateCustomerResponseDto();
         Customer savedCustomer = customerRepo.save(customer);
-        return savedCustomer.getId();
+        createCustomerResponseDto.setId(savedCustomer.getId());
+        return createCustomerResponseDto;
     }
 
-    public void update(CustomerDto customerDto, String username) {
+    public void update(PatchCustomerRequestDto customerDto, String username) {
         Customer customer = requestValidation.validateUserNameInDatabase(username, "update");
         if (!(Objects.isNull(customerDto.getFirstName()) || customerDto.getFirstName().isEmpty())) {
             customer.setFirstName(customerDto.getFirstName());
@@ -65,11 +70,11 @@ public class CustomerService {
         if ((!(Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty())) && requestValidation.validateEmail(customerDto.getEmail())) {
                 customer.setEmail(customerDto.getEmail());
         }
-        if ((!(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().isEmpty())) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage())) {
-                customer.setPreferredLanguage(customerDto.getPreferredLanguage());
+        if ((!(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().toString().isEmpty())) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
+                customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
         }
-        if ((!(Objects.isNull(customerDto.getStatus()) || customerDto.getStatus().isEmpty())) && requestValidation.validateStatus(customerDto.getStatus())) {
-                customer.setStatus(customerDto.getStatus());
+        if ((!(Objects.isNull(customerDto.getStatus()) || customerDto.getStatus().toString().isEmpty())) && requestValidation.validateStatus(customerDto.getStatus().toString())) {
+                customer.setStatus(customerDto.getStatus().toString());
         }
         customerRepo.save(customer);
     }

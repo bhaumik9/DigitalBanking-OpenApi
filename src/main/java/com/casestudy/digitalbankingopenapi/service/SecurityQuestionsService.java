@@ -13,25 +13,20 @@ import openapi.model.SecurityQuestionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SecurityQuestionsService {
 
     private SecurityQuestionsRepo securityQuestionsRepo;
     private RequestValidation requestValidation;
-    private CustomerSecurityQuestionsRepo customerSecurityQuestionsRepo;
 
-    public SecurityQuestionsService(SecurityQuestionsRepo securityQuestionsRepo, RequestValidation requestValidation, CustomerSecurityQuestionsRepo customerSecurityQuestionsRepo) {
+    public SecurityQuestionsService(SecurityQuestionsRepo securityQuestionsRepo, RequestValidation requestValidation) {
         this.securityQuestionsRepo = securityQuestionsRepo;
         this.requestValidation = requestValidation;
-        this.customerSecurityQuestionsRepo = customerSecurityQuestionsRepo;
     }
 
-    public ResponseEntity<Object> getAllSecurityQuestions() {
+    public ResponseEntity<GetSecurityQuestionsResponseDto> getAllSecurityQuestions() {
         List<SecurityQuestion> list = securityQuestionsRepo.findAll();
         if (list.isEmpty()) {
             throw new SecurityQuestionsNotFound();
@@ -44,14 +39,7 @@ public class SecurityQuestionsService {
         return ResponseEntity.ok().body(listResponse);
     }
 
-    public ResponseEntity<Object> addQuestion(String question) {
-        SecurityQuestion securityQuestion = new SecurityQuestion();
-        securityQuestion.setSecurityQuestionText(question);
-        securityQuestionsRepo.save(securityQuestion);
-        return ResponseEntity.ok().build();
-    }
-
-    public ResponseEntity<Object> getSecurityQuestionsByUsername(String username) {
+    public ResponseEntity<GetCustomerSecurityQuestionResponseDto> getSecurityQuestionsByUsername(String username) {
         Customer customer = requestValidation.validateUserNameInDatabase(username, "securityQuestion");
         List<CustomerSecurityQuestions> customerSecurityQuestionsList = customer.getCustomerSecurityQuestionsList();
         if (customerSecurityQuestionsList.isEmpty()) {
@@ -60,26 +48,5 @@ public class SecurityQuestionsService {
         GetCustomerSecurityQuestionResponseDto response = new GetCustomerSecurityQuestionResponseDto();
         customerSecurityQuestionsList.forEach(l -> response.addSecurityQuestionsItem(l.toDto()));
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    public ResponseEntity<Object> addSecurityQuestionsByUsername(String username) {
-        Customer customer = requestValidation.validateUserNameInDatabase(username, "securityQuestion");
-        List<CustomerSecurityQuestions> customerSecurityQuestions = setSecurityQuestions(customer);
-        customer.setCustomerSecurityQuestionsList(customerSecurityQuestions);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private List<CustomerSecurityQuestions> setSecurityQuestions(Customer customer) {
-        List<CustomerSecurityQuestions> list = new ArrayList<>();
-        CustomerSecurityQuestions customerSecurityQuestions = new CustomerSecurityQuestions();
-        Optional<SecurityQuestion> securityQuestion = securityQuestionsRepo.findById("1bf0e080-fb82-49c4-8039-d6e6977d093e");
-        if (securityQuestion.isPresent()) {
-            customerSecurityQuestions.setCustomer(customer);
-            customerSecurityQuestions.setSecurityQuestion(securityQuestion.get());
-            customerSecurityQuestions.setSecurityQuestionAnswer("Mustang GT");
-            customerSecurityQuestionsRepo.save(customerSecurityQuestions);
-        }
-        list.add(customerSecurityQuestions);
-        return list;
     }
 }

@@ -7,7 +7,6 @@ import openapi.model.CreateCustomerRequestDto;
 import openapi.model.InitiateOtpRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.LOGIN;

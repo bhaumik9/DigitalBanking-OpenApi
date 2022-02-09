@@ -4,6 +4,7 @@ import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerOtp;
 import com.casestudy.digitalbankingopenapi.repository.CustomerOtpRepo;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
+import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import lombok.NoArgsConstructor;
 import openapi.model.InitiateOtpRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,14 @@ public class CustomerOtpService {
     private CustomerService customerService;
     private CustomerRepo customerRepo;
     private CustomerOtpRepo customerOtpRepo;
+    private RequestValidation requestValidation;
 
     @Autowired
-    public CustomerOtpService(CustomerService customerService, CustomerRepo customerRepo, CustomerOtpRepo customerOtpRepo) {
+    public CustomerOtpService(CustomerService customerService, CustomerRepo customerRepo, CustomerOtpRepo customerOtpRepo, RequestValidation requestValidation) {
         this.customerService = customerService;
         this.customerRepo = customerRepo;
         this.customerOtpRepo = customerOtpRepo;
+        this.requestValidation = requestValidation;
     }
 
     public CustomerOtp getData(InitiateOtpRequestDto customerOtpDto) {
@@ -68,5 +71,11 @@ public class CustomerOtpService {
         customerOtpDb.setCreatedOn(customerOtp.getCreatedOn());
         customerOtpDb.setExpiresOn(customerOtp.getExpiresOn());
         customerOtpRepo.save(customerOtpDb);
+    }
+
+    public void initiateOtpRequest(InitiateOtpRequestDto initiateOtpRequestDto) {
+        requestValidation.validateInitiateOtpRequest(initiateOtpRequestDto);
+        CustomerOtp customerOtp = getData(initiateOtpRequestDto);
+        update(customerOtp);
     }
 }
