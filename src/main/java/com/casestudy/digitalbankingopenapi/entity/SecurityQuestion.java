@@ -22,7 +22,7 @@ public class SecurityQuestion {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-//    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
     private String id;
 
     @Column(name = "security_question_text")

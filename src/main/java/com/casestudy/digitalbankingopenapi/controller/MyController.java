@@ -27,14 +27,12 @@ public class MyController implements ClientApiApi{
     }
     @Override
     public ResponseEntity<Void> initiateOtp(@RequestBody InitiateOtpRequestDto initiateOtpRequestDto) {
-        customerOtpService.initiateOtpRequest(initiateOtpRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return customerOtpService.initiateOtpRequest(initiateOtpRequestDto);
     }
 
     @Override
     public ResponseEntity<Void> patchCustomerByUserName(String username, PatchCustomerRequestDto patchCustomerRequestDto) {
-        customerService.update(patchCustomerRequestDto, username);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return customerService.update(patchCustomerRequestDto, username);
     }
 
     @Override

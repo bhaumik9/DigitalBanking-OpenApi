@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.*;
+import static com.casestudy.digitalbankingopenapi.constants.WordConstants.PATTERN;
 
 @RestControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -86,18 +87,22 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse exceptionResponse = null;
-        String argument = ex.getAllErrors().get(0).getArguments()[0].toString();
-        String code = ex.getAllErrors().get(0).getCode();
+        String argument="";
+        String code="";
+        if(!ex.getAllErrors().isEmpty()){
+            argument = ex.getAllErrors().get(0).getArguments()[0].toString();
+            code = ex.getAllErrors().get(0).getCode();
+        }
         if (code.equalsIgnoreCase("NotEmpty") || code.equalsIgnoreCase("NotNull")) {
             CustomerFieldMissing customerFieldMissing = new CustomerFieldMissing();
             exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, customerFieldMissing.getMessage());
-        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("phoneNumber")) {
+        } else if (code.equalsIgnoreCase(PATTERN) && argument.contains("phoneNumber")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_PHONE_NUMBER_ERROR_CODE, "Invalid Phone Number");
-        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("email")) {
+        } else if (code.equalsIgnoreCase(PATTERN) && argument.contains("email")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_EMAIL_ERROR_CODE, "Invalid Email");
-        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("preferredLanguage")) {
+        } else if (code.equalsIgnoreCase(PATTERN) && argument.contains("preferredLanguage")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_LANGUAGE_ERROR_CODE, "Invalid Preferred Language");
-        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("userName")) {
+        } else if (code.equalsIgnoreCase(PATTERN) && argument.contains("userName")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_USERNAME_ERROR_CODE, "Invalid User Name");
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);

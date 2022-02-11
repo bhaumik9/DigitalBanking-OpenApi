@@ -9,6 +9,8 @@ import openapi.model.CreateCustomerRequestDto;
 import openapi.model.CreateCustomerResponseDto;
 import openapi.model.PatchCustomerRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,7 +57,7 @@ public class CustomerService {
         return createCustomerResponseDto;
     }
 
-    public void update(PatchCustomerRequestDto customerDto, String username) {
+    public ResponseEntity<Void> update(PatchCustomerRequestDto customerDto, String username) {
         Customer customer = requestValidation.validateUserNameInDatabase(username, "update");
         if (!(Objects.isNull(customerDto.getFirstName()) || customerDto.getFirstName().isEmpty())) {
             customer.setFirstName(customerDto.getFirstName());
@@ -63,10 +65,10 @@ public class CustomerService {
         if (!(Objects.isNull(customerDto.getLastName()) || customerDto.getLastName().isEmpty())) {
             customer.setLastName(customerDto.getLastName());
         }
-        if (((!Objects.isNull(customerDto.getPhoneNumber()) && !customerDto.getPhoneNumber().isEmpty())) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
+        if ((!Objects.isNull(customerDto.getPhoneNumber()) && !customerDto.getPhoneNumber().isEmpty()) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
                 customer.setPhoneNumber(customerDto.getPhoneNumber());
         }
-        if (((!Objects.isNull(customerDto.getEmail()) && !customerDto.getEmail().isEmpty())) && requestValidation.validateEmail(customerDto.getEmail())) {
+        if ((!Objects.isNull(customerDto.getEmail()) && !customerDto.getEmail().isEmpty()) && requestValidation.validateEmail(customerDto.getEmail())) {
                 customer.setEmail(customerDto.getEmail());
         }
         if ((!Objects.isNull(customerDto.getPreferredLanguage()) && customerDto.getPreferredLanguage().toString().isEmpty()) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
@@ -76,5 +78,6 @@ public class CustomerService {
                 customer.setStatus(customerDto.getStatus().toString());
         }
         customerRepo.save(customer);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -10,6 +10,8 @@ import openapi.model.InitiateOtpRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -73,9 +75,10 @@ public class CustomerOtpService {
         customerOtpRepo.save(customerOtpDb);
     }
 
-    public void initiateOtpRequest(InitiateOtpRequestDto initiateOtpRequestDto) {
+    public ResponseEntity<Void> initiateOtpRequest(InitiateOtpRequestDto initiateOtpRequestDto) {
         requestValidation.validateInitiateOtpRequest(initiateOtpRequestDto);
         CustomerOtp customerOtp = getData(initiateOtpRequestDto);
         update(customerOtp);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
