@@ -10,23 +10,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Objects;
-
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.*;
 
 @RestControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(CustomerFieldMissing.class)
+    public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerFieldMissing ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(CustomerSecurityQuestionsNotFound.class)
-    public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerSecurityQuestionsNotFound ex){
-        ExceptionResponse exceptionResponse=new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_EMPTY_ERROR_CODE,ex.getMessage());
-        return new ResponseEntity<>(exceptionResponse,HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerSecurityQuestionsNotFound ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(SecurityQuestionsNotFound.class)
-    public ResponseEntity<Object> handleEmptySecurityQuestions(SecurityQuestionsNotFound ex){
-        ExceptionResponse exceptionResponse=new ExceptionResponse(SECURITY_QUESTION_EMPTY_ERROR_CODE,ex.getMessage());
-        return new ResponseEntity<>(exceptionResponse,HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleEmptySecurityQuestions(SecurityQuestionsNotFound ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(CustomerNotFound.class)
     public ResponseEntity<Object> handleCustomerNotFound(CustomerNotFound ex) {
         ExceptionResponse exceptionResponse = null;
@@ -35,17 +40,10 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                     CUSTOMER_UPDATE_NOT_PRESENT_ERROR_CODE, ex.getMessage());
         } else if (ex.getType().equalsIgnoreCase("otp")) {
             exceptionResponse = new ExceptionResponse(INVALID_CUSTOMER_ERROR_CODE, ex.getMessage());
-        }else if(ex.getType().equalsIgnoreCase("securityQuestion")){
-            exceptionResponse=new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_CUSTOMER_NOT_FOUND__ERROR_CODE,ex.getMessage());
+        } else if (ex.getType().equalsIgnoreCase("securityQuestion")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_CUSTOMER_NOT_FOUND__ERROR_CODE, ex.getMessage());
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(InvalidTemplateIdException.class)
-    public ResponseEntity<Object> handleInvalidTemplateId(InvalidTemplateIdException ex) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(
-                INVALID_TEMPLATE_ID_ERROR_CODE, ex.getMessage());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MandatoryFieldMissingException.class)
@@ -79,6 +77,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             exceptionResponse = new ExceptionResponse(CUSTOMER_UPDATE_INVALID_EMAIL_ERROR_CODE, message);
         } else if (message.equalsIgnoreCase("Invalid Preferred Language")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_UPDATE_INVALID_PREFERRED_LANGUAGE_ERROR_CODE, message);
+        } else if (message.equalsIgnoreCase("Invalid Template Id")) {
+            exceptionResponse = new ExceptionResponse(INVALID_TEMPLATE_ID_ERROR_CODE, message);
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
@@ -86,22 +86,19 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse exceptionResponse = null;
+        String argument = ex.getAllErrors().get(0).getArguments()[0].toString();
         String code = ex.getAllErrors().get(0).getCode();
-        String message = ex.getAllErrors().get(0).getDefaultMessage();
-        if(Objects.isNull(message)){
-            message="default";
-        }
         if (code.equalsIgnoreCase("NotEmpty") || code.equalsIgnoreCase("NotNull")) {
             CustomerFieldMissing customerFieldMissing = new CustomerFieldMissing();
             exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, customerFieldMissing.getMessage());
-        } else if (code.equalsIgnoreCase("Pattern") && message.equalsIgnoreCase("Invalid phoneNumber")) {
-            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_PHONE_NUMBER_ERROR_CODE, message);
-        } else if (code.equalsIgnoreCase("Pattern") && message.equalsIgnoreCase("Invalid email")) {
-            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_EMAIL_ERROR_CODE, message);
-        } else if (code.equalsIgnoreCase("Pattern") && message.equalsIgnoreCase("Invalid Preferred Language")) {
-            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_LANGUAGE_ERROR_CODE, message);
-        } else if (code.equalsIgnoreCase("Pattern") && message.equalsIgnoreCase("Invalid username")) {
-            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_USERNAME_ERROR_CODE, message);
+        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("phoneNumber")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_PHONE_NUMBER_ERROR_CODE, "Invalid Phone Number");
+        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("email")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_EMAIL_ERROR_CODE, "Invalid Email");
+        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("preferredLanguage")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_LANGUAGE_ERROR_CODE, "Invalid Preferred Language");
+        } else if (code.equalsIgnoreCase("Pattern") && argument.contains("userName")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_USERNAME_ERROR_CODE, "Invalid User Name");
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }

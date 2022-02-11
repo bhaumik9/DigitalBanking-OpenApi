@@ -41,13 +41,45 @@ public class RequestValidation {
         if (Objects.isNull(templateId) || templateId.isEmpty() || templateId.equals(REGISTRATION) || templateId.equals(LOGIN)) {
             return;
         }
-        throw new InvalidTemplateIdException();
+        throw new InvalidFieldException("Invalid Template Id");
     }
 
     public void validateCustomer(CreateCustomerRequestDto customerDto) {
-        validateUsernameInDatabase(customerDto.getUserName());
+        validateMissingFields(customerDto);
+        validateEmail(customerDto.getEmail());
+        validatePhoneNumber(customerDto.getPhoneNumber());
+        validateUsername(customerDto.getUserName());
+        validatePreferredLanguage(customerDto.getPreferredLanguage().toString());
+        validateDuplicateUsername(customerDto.getUserName());
     }
 
+    private void validateMissingFields(CreateCustomerRequestDto customerDto) {
+        if(customerDto.getUserName().isEmpty()){
+            throw new CustomerFieldMissing("Username");
+        }
+        if(customerDto.getFirstName().isEmpty()){
+            throw new CustomerFieldMissing("First Name");
+        }
+        if(customerDto.getLastName().isEmpty()){
+            throw new CustomerFieldMissing("Last Name");
+        }
+        if(Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty()){
+            throw new CustomerFieldMissing("Email");
+        }
+        if(customerDto.getPhoneNumber().isEmpty()){
+            throw new CustomerFieldMissing("Phone Number");
+        }
+        if(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().toString().isEmpty()){
+            throw new CustomerFieldMissing("Preferred Language");
+        }
+    }
+
+    public boolean validateUsername(String username){
+        if(!username.matches("^[A-Za-z][A-Za-z0-9_]{7,29}$")){
+            throw new InvalidFieldException("Invalid Username");
+        }
+        return Boolean.TRUE;
+    }
     public boolean validatePhoneNumber(String phoneNumber){
         if (!phoneNumber.matches("\\d{10}")) {
             throw new InvalidFieldException("Invalid Phone Number");
@@ -76,7 +108,7 @@ public class RequestValidation {
         return Boolean.FALSE;
     }
 
-    private void validateUsernameInDatabase(String username) {
+    private void validateDuplicateUsername(String username) {
         if (customerRepo.existsByUserName(username)) {
             throw new DuplicateUsernameException();
         }

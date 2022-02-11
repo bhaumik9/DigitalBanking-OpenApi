@@ -1,6 +1,5 @@
 package com.casestudy.digitalbankingopenapi.service;
 
-import com.casestudy.digitalbankingopenapi.dto.CustomerDto;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.enums.CustomerStatus;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
@@ -64,16 +63,16 @@ public class CustomerService {
         if (!(Objects.isNull(customerDto.getLastName()) || customerDto.getLastName().isEmpty())) {
             customer.setLastName(customerDto.getLastName());
         }
-        if ((!(Objects.isNull(customerDto.getPhoneNumber()) || customerDto.getPhoneNumber().isEmpty())) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
+        if (((!Objects.isNull(customerDto.getPhoneNumber()) && !customerDto.getPhoneNumber().isEmpty())) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
                 customer.setPhoneNumber(customerDto.getPhoneNumber());
         }
-        if ((!(Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty())) && requestValidation.validateEmail(customerDto.getEmail())) {
+        if (((!Objects.isNull(customerDto.getEmail()) && !customerDto.getEmail().isEmpty())) && requestValidation.validateEmail(customerDto.getEmail())) {
                 customer.setEmail(customerDto.getEmail());
         }
-        if ((!(Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().toString().isEmpty())) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
+        if ((!Objects.isNull(customerDto.getPreferredLanguage()) && customerDto.getPreferredLanguage().toString().isEmpty()) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
                 customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
         }
-        if ((!(Objects.isNull(customerDto.getStatus()) || customerDto.getStatus().toString().isEmpty())) && requestValidation.validateStatus(customerDto.getStatus().toString())) {
+        if ((!Objects.isNull(customerDto.getStatus()) && !customerDto.getStatus().toString().isEmpty()) && requestValidation.validateStatus(customerDto.getStatus().toString())) {
                 customer.setStatus(customerDto.getStatus().toString());
         }
         customerRepo.save(customer);

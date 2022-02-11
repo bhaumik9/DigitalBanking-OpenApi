@@ -4,7 +4,6 @@ import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerSecurityQuestions;
 import com.casestudy.digitalbankingopenapi.entity.SecurityQuestion;
 import com.casestudy.digitalbankingopenapi.exception.SecurityQuestionsNotFound;
-import com.casestudy.digitalbankingopenapi.repository.CustomerSecurityQuestionsRepo;
 import com.casestudy.digitalbankingopenapi.repository.SecurityQuestionsRepo;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import openapi.model.GetCustomerSecurityQuestionResponseDto;

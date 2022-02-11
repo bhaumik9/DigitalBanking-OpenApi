@@ -342,6 +342,7 @@ components:
       description: Preferred Language of the User as per ISO 639.2
       enum: [ EN, FR, DE ]
       example: EN
+
     CreatedOn:
       type: string
       description: The creation date of the object
