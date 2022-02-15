@@ -2,6 +2,7 @@ package com.casestudy.digitalbankingopenapi.controller;
 
 import com.casestudy.digitalbankingopenapi.service.CustomerOtpService;
 import com.casestudy.digitalbankingopenapi.service.CustomerService;
+import com.casestudy.digitalbankingopenapi.service.SecurityImageService;
 import com.casestudy.digitalbankingopenapi.service.SecurityQuestionsService;
 import openapi.api.ClientApiApi;
 import openapi.model.*;
@@ -18,12 +19,14 @@ public class MyController implements ClientApiApi{
     private CustomerService customerService;
     private CustomerOtpService customerOtpService;
     private SecurityQuestionsService securityQuestionsService;
+    private SecurityImageService securityImageService;
 
     @Autowired
-    public MyController(CustomerService customerService, CustomerOtpService customerOtpService, SecurityQuestionsService securityQuestionsService) {
+    public MyController(CustomerService customerService, CustomerOtpService customerOtpService, SecurityQuestionsService securityQuestionsService, SecurityImageService securityImageService) {
         this.customerService = customerService;
         this.customerOtpService = customerOtpService;
         this.securityQuestionsService = securityQuestionsService;
+        this.securityImageService = securityImageService;
     }
     @Override
     public ResponseEntity<Void> initiateOtp(@RequestBody InitiateOtpRequestDto initiateOtpRequestDto) {
@@ -55,5 +58,15 @@ public class MyController implements ClientApiApi{
     @Override
     public ResponseEntity<GetCustomerSecurityQuestionResponseDto> getSecurityQuestionsByUserName(String username) {
         return securityQuestionsService.getSecurityQuestionsByUsername(username);
+    }
+
+    @Override
+    public ResponseEntity<Void> saveSecurityImageById(String username, CreateCustomerSecurityImageRequestDto createCustomerSecurityImageRequestDto) {
+        return securityImageService.addImageByUsername(username,createCustomerSecurityImageRequestDto);
+    }
+
+    @Override
+    public ResponseEntity<GetCustomerSecurityImageResponseDto> getSecurityImageByUserName(String username) {
+       return securityImageService.getImageByUsername(username);
     }
 }

@@ -1,8 +1,6 @@
 package com.casestudy.digitalbankingopenapi.entity.embeddables;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -12,13 +10,9 @@ import java.util.UUID;
 @Setter
 @Embeddable
 @EqualsAndHashCode
-public class    CustomerSecurityImagesId  implements Serializable {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class CustomerSecurityImagesId implements Serializable {
     private String customerId;
     private String securityImageId;
-
-    public CustomerSecurityImagesId(){
-        this.securityImageId= UUID.randomUUID().toString();
-    }
-
 }

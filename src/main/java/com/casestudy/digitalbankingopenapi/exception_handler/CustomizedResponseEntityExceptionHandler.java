@@ -21,6 +21,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, ex.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleEmptySecurityQuestions(NotFoundException ex) {
+        ExceptionResponse exceptionResponse=null;
+        if(ex.getType().equalsIgnoreCase("")){
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_NOT_FOUND_ERROR_CODE, ex.getMessage());
+        }
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(CustomerSecurityQuestionsNotFound.class)
     public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerSecurityQuestionsNotFound ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
@@ -80,6 +88,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             exceptionResponse = new ExceptionResponse(CUSTOMER_UPDATE_INVALID_PREFERRED_LANGUAGE_ERROR_CODE, message);
         } else if (message.equalsIgnoreCase("Invalid Template Id")) {
             exceptionResponse = new ExceptionResponse(INVALID_TEMPLATE_ID_ERROR_CODE, message);
+        }else if(message.equalsIgnoreCase("Security Image Caption Invalid")){
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_INVALID__ERROR_CODE, message);
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }

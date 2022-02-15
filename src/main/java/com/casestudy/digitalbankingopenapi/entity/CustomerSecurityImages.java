@@ -19,6 +19,10 @@ public class CustomerSecurityImages {
     @MapsId("customerId")
     Customer customer;
 
+    @ManyToOne
+    @MapsId("securityImageId")
+    SecurityImages securityImages;
+
     @Column(name = "security_image_caption")
     String securityImageCaption;
 
