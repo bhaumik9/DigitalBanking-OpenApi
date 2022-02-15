@@ -4,6 +4,7 @@ import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerSecurityQuestions;
 import com.casestudy.digitalbankingopenapi.entity.SecurityQuestion;
 import com.casestudy.digitalbankingopenapi.exception.SecurityQuestionsNotFound;
+import com.casestudy.digitalbankingopenapi.mapper.SecurityQuestionListMapper;
 import com.casestudy.digitalbankingopenapi.repository.SecurityQuestionsRepo;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import openapi.model.GetCustomerSecurityQuestionResponseDto;
@@ -19,10 +20,12 @@ public class SecurityQuestionsService {
 
     private SecurityQuestionsRepo securityQuestionsRepo;
     private RequestValidation requestValidation;
+    private SecurityQuestionListMapper securityQuestionListMapper;
 
-    public SecurityQuestionsService(SecurityQuestionsRepo securityQuestionsRepo, RequestValidation requestValidation) {
+    public SecurityQuestionsService(SecurityQuestionsRepo securityQuestionsRepo, RequestValidation requestValidation, SecurityQuestionListMapper securityQuestionListMapper) {
         this.securityQuestionsRepo = securityQuestionsRepo;
         this.requestValidation = requestValidation;
+        this.securityQuestionListMapper = securityQuestionListMapper;
     }
 
     public ResponseEntity<GetSecurityQuestionsResponseDto> getAllSecurityQuestions() {
@@ -44,8 +47,7 @@ public class SecurityQuestionsService {
         if (customerSecurityQuestionsList.isEmpty()) {
             throw new SecurityQuestionsNotFound();
         }
-        GetCustomerSecurityQuestionResponseDto response = new GetCustomerSecurityQuestionResponseDto();
-        customerSecurityQuestionsList.forEach(l -> response.addSecurityQuestionsItem(l.toDto()));
+        GetCustomerSecurityQuestionResponseDto response = securityQuestionListMapper.toCustomerSecurityQuestionResponseDto(customerSecurityQuestionsList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
