@@ -2,6 +2,7 @@ package com.casestudy.digitalbankingopenapi.service;
 
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.enums.CustomerStatus;
+import com.casestudy.digitalbankingopenapi.mapper.CustomerMapperImpl;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import com.casestudy.digitalbankingopenapi.util.Util;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
@@ -25,6 +26,9 @@ public class CustomerService {
     @Autowired
     private RequestValidation requestValidation;
 
+    @Autowired
+    CustomerMapperImpl customerMapper;
+
     Util util=new Util();
 
     public String generateOtp() {
@@ -34,27 +38,14 @@ public class CustomerService {
 
     public CreateCustomerResponseDto add(CreateCustomerRequestDto customerDto) {
         requestValidation.validateCustomer(customerDto);
-        Customer customer=new Customer();
-        customer.setFirstName(customerDto.getFirstName());
-        customer.setLastName(customerDto.getLastName());
-        customer.setUserName(customerDto.getUserName());
-        customer.setPhoneNumber(customerDto.getPhoneNumber());
-        customer.setEmail(customerDto.getEmail());
-        customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
+        Customer customer = customerMapper.dtoToEntity(customerDto,LocalDateTime.now());
         customer.setStatus(CustomerStatus.ACTIVE.toString());
-        customer.setExternalId(customer.getUserName() + "_ext");
-        customer.setCreatedBy(System.getProperty("user.name"));
-        customer.setUpdatedBy(System.getProperty("user.name"));
-        customer.setCreatedOn(LocalDateTime.now());
-        customer.setUpdatedOn(LocalDateTime.now());
         return insertIntoDatabase(customer);
     }
 
     private CreateCustomerResponseDto insertIntoDatabase(Customer customer) {
-        CreateCustomerResponseDto createCustomerResponseDto=new CreateCustomerResponseDto();
         Customer savedCustomer = customerRepo.save(customer);
-        createCustomerResponseDto.setId(savedCustomer.getId());
-        return createCustomerResponseDto;
+        return customerMapper.entityToResponseDto(savedCustomer);
     }
 
     public ResponseEntity<Void> update(PatchCustomerRequestDto customerDto, String username) {

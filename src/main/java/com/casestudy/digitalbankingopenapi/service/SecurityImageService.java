@@ -50,7 +50,7 @@ public class SecurityImageService {
     }
 
     public ResponseEntity<GetCustomerSecurityImageResponseDto> getImageByUsername(String username) {
-        Customer customer = requestValidation.validateUserNameInDatabase(username,"security Image");
+        Customer customer = requestValidation.validateUserNameInDatabase(username,"get security Image");
         CustomerSecurityImages customerSecurityImage = customer.getCustomerSecurityImage();
         GetCustomerSecurityImageResponseDto securityImageResponseDto = securityImageMapper.entityToCustomerSecurityImageResponseDto(customerSecurityImage);
         return new ResponseEntity<>(securityImageResponseDto,HttpStatus.OK);

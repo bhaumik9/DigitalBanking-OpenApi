@@ -2,6 +2,7 @@ package com.casestudy.digitalbankingopenapi.service;
 
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerOtp;
+import com.casestudy.digitalbankingopenapi.mapper.OtpMapperImpl;
 import com.casestudy.digitalbankingopenapi.repository.CustomerOtpRepo;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
@@ -35,13 +36,15 @@ public class CustomerOtpService {
     private CustomerRepo customerRepo;
     private CustomerOtpRepo customerOtpRepo;
     private RequestValidation requestValidation;
+    private OtpMapperImpl otpMapper;
 
     @Autowired
-    public CustomerOtpService(CustomerService customerService, CustomerRepo customerRepo, CustomerOtpRepo customerOtpRepo, RequestValidation requestValidation) {
+    public CustomerOtpService(CustomerService customerService, CustomerRepo customerRepo, CustomerOtpRepo customerOtpRepo, RequestValidation requestValidation, OtpMapperImpl otpMapper) {
         this.customerService = customerService;
         this.customerRepo = customerRepo;
         this.customerOtpRepo = customerOtpRepo;
         this.requestValidation = requestValidation;
+        this.otpMapper = otpMapper;
     }
 
     public CustomerOtp getData(InitiateOtpRequestDto customerOtpDto) {
@@ -55,9 +58,11 @@ public class CustomerOtpService {
         } else {
             message = messageDefault.concat(" ").concat(otp);
         }
-        LocalDateTime otpTimeCreated = LocalDateTime.now();
-        LocalDateTime otpTimeExpired = otpTimeCreated.plusMinutes(5);
-        return new CustomerOtp(message, otp, 0, otpTimeExpired, otpTimeCreated, customerOtpDto.getUserName());
+        CustomerOtp customerOtp = otpMapper.mapToEntity(customerOtpDto, LocalDateTime.now());
+        customerOtp.setOtpMessage(message);
+        customerOtp.setRetries(0);
+        customerOtp.setOtp(otp);
+        return customerOtp;
     }
 
     public void update(CustomerOtp customerOtp) {

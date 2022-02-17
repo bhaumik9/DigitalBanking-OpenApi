@@ -21,24 +21,26 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, ex.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleEmptySecurityQuestions(NotFoundException ex) {
-        ExceptionResponse exceptionResponse=null;
-        if(ex.getType().equalsIgnoreCase("")){
-            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_NOT_FOUND_ERROR_CODE, ex.getMessage());
+        ExceptionResponse exceptionResponse = null;
+        if (ex.getType().equalsIgnoreCase("Image")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_IMAGE_NOT_FOUND_ERROR_CODE, ex.getMessage());
+        }
+        if (ex.getType().equalsIgnoreCase("otp")) {
+            exceptionResponse = new ExceptionResponse(INVALID_CUSTOMER_ERROR_CODE, ex.getMessage());
+        }
+        if (ex.getType().equalsIgnoreCase("security Question")) {
+            exceptionResponse = new ExceptionResponse(SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
+        }
+        if (ex.getType().equalsIgnoreCase("customer security Question")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
+        }
+        if (ex.getType().equalsIgnoreCase("security Image")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_CUSTOMER_NOT_FOUND_ERROR_CODE, ex.getMessage());
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
-    @ExceptionHandler(CustomerSecurityQuestionsNotFound.class)
-    public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerSecurityQuestionsNotFound ex) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(SecurityQuestionsNotFound.class)
-    public ResponseEntity<Object> handleEmptySecurityQuestions(SecurityQuestionsNotFound ex) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(SECURITY_QUESTION_EMPTY_ERROR_CODE, ex.getMessage());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CustomerNotFound.class)
@@ -50,7 +52,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         } else if (ex.getType().equalsIgnoreCase("otp")) {
             exceptionResponse = new ExceptionResponse(INVALID_CUSTOMER_ERROR_CODE, ex.getMessage());
         } else if (ex.getType().equalsIgnoreCase("securityQuestion")) {
-            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_CUSTOMER_NOT_FOUND__ERROR_CODE, ex.getMessage());
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_QUESTION_CUSTOMER_NOT_FOUND_ERROR_CODE, ex.getMessage());
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
@@ -62,6 +64,12 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             exceptionResponse = new ExceptionResponse(
                     CUSTOMER_UPDATE_FIELD_MISSING_ERROR_CODE, ex.getMessage());
         } else if (ex.getType().equalsIgnoreCase("otp")) {
+            exceptionResponse = new ExceptionResponse(
+                    FIELD_MISSING_ERROR_CODE, ex.getMessage());
+        } else if (ex.getType().equalsIgnoreCase("securityQuestion")) {
+            exceptionResponse = new ExceptionResponse(
+                    FIELD_MISSING_ERROR_CODE, ex.getMessage());
+        } else if (ex.getType().equalsIgnoreCase("security Image")) {
             exceptionResponse = new ExceptionResponse(
                     FIELD_MISSING_ERROR_CODE, ex.getMessage());
         }
@@ -88,8 +96,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             exceptionResponse = new ExceptionResponse(CUSTOMER_UPDATE_INVALID_PREFERRED_LANGUAGE_ERROR_CODE, message);
         } else if (message.equalsIgnoreCase("Invalid Template Id")) {
             exceptionResponse = new ExceptionResponse(INVALID_TEMPLATE_ID_ERROR_CODE, message);
-        }else if(message.equalsIgnoreCase("Security Image Caption Invalid")){
-            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_INVALID__ERROR_CODE, message);
+        } else if (message.equalsIgnoreCase("Security Image Caption Invalid")) {
+            exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_CAPTION_INVALID_ERROR_CODE, message);
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
@@ -97,9 +105,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse exceptionResponse = null;
-        String argument="";
-        String code="";
-        if(!ex.getAllErrors().isEmpty()){
+        String argument = "";
+        String code = "";
+        if (!ex.getAllErrors().isEmpty()) {
             argument = ex.getAllErrors().get(0).getArguments()[0].toString();
             code = ex.getAllErrors().get(0).getCode();
         }

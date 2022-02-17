@@ -44,7 +44,7 @@ public class RequestValidation {
         }
         Customer customer = customerRepo.findByUserName(userName);
         if (Objects.isNull(customer)) {
-            throw new NotFoundException("",type);
+            throw new NotFoundException("Username not found in database",type);
         }
         return customer;
     }
