@@ -1,5 +1,7 @@
 package com.casestudy.digitalbankingopenapi.service;
 
+import com.casestudy.digitalbankingopenapi.controller.ExternalController;
+import com.casestudy.digitalbankingopenapi.dto.AgeResponseDto;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.enums.CustomerStatus;
 import com.casestudy.digitalbankingopenapi.mapper.CustomerMapperImpl;
@@ -29,7 +31,10 @@ public class CustomerService {
     @Autowired
     CustomerMapperImpl customerMapper;
 
-    Util util=new Util();
+    @Autowired
+    ExternalController externalController;
+
+    Util util = new Util();
 
     public String generateOtp() {
         int randomValue = util.getSecureRandom();
@@ -38,7 +43,9 @@ public class CustomerService {
 
     public CreateCustomerResponseDto add(CreateCustomerRequestDto customerDto) {
         requestValidation.validateCustomer(customerDto);
-        Customer customer = customerMapper.dtoToEntity(customerDto,LocalDateTime.now());
+        int age = externalController.getExternalApiData(customerDto.getUserName());
+        Customer customer = customerMapper.dtoToEntity(customerDto, LocalDateTime.now());
+        customer.setAge(age);
         customer.setStatus(CustomerStatus.ACTIVE.toString());
         return insertIntoDatabase(customer);
     }
@@ -57,16 +64,16 @@ public class CustomerService {
             customer.setLastName(customerDto.getLastName());
         }
         if ((!Objects.isNull(customerDto.getPhoneNumber()) && !customerDto.getPhoneNumber().isEmpty()) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
-                customer.setPhoneNumber(customerDto.getPhoneNumber());
+            customer.setPhoneNumber(customerDto.getPhoneNumber());
         }
         if ((!Objects.isNull(customerDto.getEmail()) && !customerDto.getEmail().isEmpty()) && requestValidation.validateEmail(customerDto.getEmail())) {
-                customer.setEmail(customerDto.getEmail());
+            customer.setEmail(customerDto.getEmail());
         }
         if ((!Objects.isNull(customerDto.getPreferredLanguage()) && customerDto.getPreferredLanguage().toString().isEmpty()) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
-                customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
+            customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
         }
         if ((!Objects.isNull(customerDto.getStatus()) && !customerDto.getStatus().toString().isEmpty()) && requestValidation.validateStatus(customerDto.getStatus().toString())) {
-                customer.setStatus(customerDto.getStatus().toString());
+            customer.setStatus(customerDto.getStatus().toString());
         }
         customerRepo.save(customer);
         return new ResponseEntity<>(HttpStatus.OK);

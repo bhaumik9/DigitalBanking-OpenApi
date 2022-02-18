@@ -142,11 +142,11 @@ public class RequestValidation {
     }
 
     public void validateExistingImage(String id) {
-        CustomerSecurityImages byCustomerId = customerSecurityImagesRepo.findByCustomerId(id);
-        if(Objects.isNull(byCustomerId)){
+        CustomerSecurityImages customerSecurityImage = customerSecurityImagesRepo.findByCustomerId(id);
+        if(Objects.isNull(customerSecurityImage)){
             return;
         }else {
-            customerSecurityImagesRepo.delete(byCustomerId);
+            customerSecurityImagesRepo.delete(customerSecurityImage);
         }
     }
 }

@@ -38,7 +38,7 @@ public class SecurityImageService {
         Customer customer = requestValidation.validateUserNameInDatabase(username, "security Image");
         SecurityImages securityImage = requestValidation.validateSecurityImage(createCustomerSecurityImageRequestDto);
         requestValidation.validateExistingImage(customer.getId());
-        CustomerSecurityImages customerSecurityImages=new CustomerSecurityImages();
+        CustomerSecurityImages customerSecurityImages = new CustomerSecurityImages();
         customerSecurityImages.setCustomer(customer);
         customerSecurityImages.setSecurityImages(securityImage);
         customerSecurityImages.setSecurityImageCaption(createCustomerSecurityImageRequestDto.getSecurityImageCaption());
@@ -50,9 +50,9 @@ public class SecurityImageService {
     }
 
     public ResponseEntity<GetCustomerSecurityImageResponseDto> getImageByUsername(String username) {
-        Customer customer = requestValidation.validateUserNameInDatabase(username,"get security Image");
+        Customer customer = requestValidation.validateUserNameInDatabase(username, "get security Image");
         CustomerSecurityImages customerSecurityImage = customer.getCustomerSecurityImage();
         GetCustomerSecurityImageResponseDto securityImageResponseDto = securityImageMapper.entityToCustomerSecurityImageResponseDto(customerSecurityImage);
-        return new ResponseEntity<>(securityImageResponseDto,HttpStatus.OK);
+        return new ResponseEntity<>(securityImageResponseDto, HttpStatus.OK);
     }
 }

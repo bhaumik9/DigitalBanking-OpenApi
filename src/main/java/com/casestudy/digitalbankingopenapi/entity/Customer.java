@@ -61,6 +61,8 @@ public class Customer {
     @Column(name = "update_on")
     private LocalDateTime updatedOn;
 
+    private int age;
+
     @OneToOne(mappedBy = "customer")
     CustomerOtp customerOtp;
 
