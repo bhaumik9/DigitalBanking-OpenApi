@@ -9,13 +9,10 @@ import openapi.model.PreferredLanguageDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.commons.util.AnnotationUtils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.function.BinaryOperator;
 
 import static com.casestudy.digitalbankingopenapi.constants.ErrorCode.LOGIN;
 
@@ -73,7 +70,7 @@ class RequestValidationTest {
         customerRequestDto.setEmail("bhaumik");
         customerRequestDto.setPhoneNumber("9988776655");
         customerRequestDto.setPreferredLanguage(PreferredLanguageDto.DE);
-        Assertions.assertThrows(CustomerFieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
+        Assertions.assertThrows(FieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
     }
 
     @Test
@@ -85,7 +82,7 @@ class RequestValidationTest {
         customerRequestDto.setEmail("bhaumik@mob.com");
         customerRequestDto.setPhoneNumber("9988776655");
         customerRequestDto.setPreferredLanguage(PreferredLanguageDto.DE);
-        Assertions.assertThrows(CustomerFieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
+        Assertions.assertThrows(FieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
     }
 
     @Test
@@ -97,7 +94,7 @@ class RequestValidationTest {
         customerRequestDto.setEmail("bhaumik@mmob.com");
         customerRequestDto.setPhoneNumber("9988776655");
         customerRequestDto.setPreferredLanguage(PreferredLanguageDto.DE);
-        Assertions.assertThrows(CustomerFieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
+        Assertions.assertThrows(FieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
     }
 
     @Test
@@ -109,7 +106,7 @@ class RequestValidationTest {
         customerRequestDto.setEmail("bhaumik");
         customerRequestDto.setPhoneNumber("");
         customerRequestDto.setPreferredLanguage(PreferredLanguageDto.DE);
-        Assertions.assertThrows(CustomerFieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
+        Assertions.assertThrows(FieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
     }
 
     @Test
@@ -120,7 +117,7 @@ class RequestValidationTest {
         customerRequestDto.setLastName("chhunchha");
         customerRequestDto.setEmail("bhaumik");
         customerRequestDto.setPhoneNumber("9988776655");
-        Assertions.assertThrows(CustomerFieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
+        Assertions.assertThrows(FieldMissing.class, () -> requestValidation.validateCustomer(customerRequestDto));
     }
 
     @Test

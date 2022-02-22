@@ -13,6 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerSecurityImagesId implements Serializable {
-    private String customerId;
-    private String securityImageId;
+     String customerId;
+     String securityImageId;
 }

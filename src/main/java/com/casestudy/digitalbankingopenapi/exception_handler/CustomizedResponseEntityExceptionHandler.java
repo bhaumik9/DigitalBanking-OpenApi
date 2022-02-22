@@ -16,9 +16,19 @@ import static com.casestudy.digitalbankingopenapi.constants.WordConstants.PATTER
 @RestControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CustomerFieldMissing.class)
-    public ResponseEntity<Object> handleEmptySecurityQuestions(CustomerFieldMissing ex) {
+    @ExceptionHandler(FieldMissing.class)
+    public ResponseEntity<Object> handleEmptySecurityQuestions(FieldMissing ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(AttemptsFailedException.class)
+    public ResponseEntity<Object> handleAttemptsFailedException(AttemptsFailedException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(VALIDATE_OTP_ATTEMPTS_EXPIRED_OTP_ERROR_CODE, ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<Object> handleOtpExpiredException(OtpExpiredException ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(VALIDATE_OTP_EXPIRED_OTP_ERROR_CODE, ex.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -39,6 +49,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         }
         if (ex.getType().equalsIgnoreCase("security Image")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_SECURITY_IMAGE_CUSTOMER_NOT_FOUND_ERROR_CODE, ex.getMessage());
+        }
+        if (ex.getType().equalsIgnoreCase("validate otp")){
+            exceptionResponse = new ExceptionResponse(VALIDATE_OTP_USERNAME_NOT_FOUND_ERROR_CODE, ex.getMessage());
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
@@ -70,6 +83,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             exceptionResponse = new ExceptionResponse(
                     FIELD_MISSING_ERROR_CODE, ex.getMessage());
         } else if (ex.getType().equalsIgnoreCase("security Image")) {
+            exceptionResponse = new ExceptionResponse(
+                    FIELD_MISSING_ERROR_CODE, ex.getMessage());
+        } else if(ex.getType().equalsIgnoreCase("validate otp")){
             exceptionResponse = new ExceptionResponse(
                     FIELD_MISSING_ERROR_CODE, ex.getMessage());
         }
@@ -112,7 +128,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             code = ex.getAllErrors().get(0).getCode();
         }
         if (code.equalsIgnoreCase("NotEmpty") || code.equalsIgnoreCase("NotNull")) {
-            CustomerFieldMissing customerFieldMissing = new CustomerFieldMissing();
+            FieldMissing customerFieldMissing = new FieldMissing();
             exceptionResponse = new ExceptionResponse(CUSTOMER_FIELD_MISSING_ERROR_CODE, customerFieldMissing.getMessage());
         } else if (code.equalsIgnoreCase(PATTERN) && argument.contains("phoneNumber")) {
             exceptionResponse = new ExceptionResponse(CUSTOMER_INVALID_PHONE_NUMBER_ERROR_CODE, "Invalid Phone Number");

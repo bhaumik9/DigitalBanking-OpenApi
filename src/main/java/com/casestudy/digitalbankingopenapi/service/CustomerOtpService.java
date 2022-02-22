@@ -2,12 +2,17 @@ package com.casestudy.digitalbankingopenapi.service;
 
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.entity.CustomerOtp;
+import com.casestudy.digitalbankingopenapi.exception.AttemptsFailedException;
+import com.casestudy.digitalbankingopenapi.exception.InvalidFieldException;
+import com.casestudy.digitalbankingopenapi.exception.OtpExpiredException;
 import com.casestudy.digitalbankingopenapi.mapper.OtpMapperImpl;
 import com.casestudy.digitalbankingopenapi.repository.CustomerOtpRepo;
 import com.casestudy.digitalbankingopenapi.repository.CustomerRepo;
 import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import lombok.NoArgsConstructor;
 import openapi.model.InitiateOtpRequestDto;
+import openapi.model.ValidateOtpRequestDto;
+import org.hibernate.boot.model.source.internal.hbm.AttributesHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -84,6 +89,27 @@ public class CustomerOtpService {
         requestValidation.validateInitiateOtpRequest(initiateOtpRequestDto);
         CustomerOtp customerOtp = getData(initiateOtpRequestDto);
         update(customerOtp);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<Void> validateOtp(ValidateOtpRequestDto validateOtpRequestDto) {
+        Customer customer = requestValidation.validateUserNameInDatabase(validateOtpRequestDto.getUserName(), "validate otp");
+        requestValidation.validateOtpIsNullOrEmpty(validateOtpRequestDto.getOtp());
+        CustomerOtp customerOtp = customer.getCustomerOtp();
+        int retries = customerOtp.getRetries();
+        if(!customer.getCustomerOtp().getOtp().equals(validateOtpRequestDto.getOtp())){
+            retries++;
+            customerOtp.setRetries(retries);
+            customerOtpRepo.save(customerOtp);
+            throw new InvalidFieldException("invalidate otp");
+        }
+        if(retries>2){
+            throw new AttemptsFailedException("You have exceeded your attempts");
+        }
+        if(customerOtp.getExpiresOn().isBefore(LocalDateTime.now())){
+            throw new OtpExpiredException("Otp entered by you is expired");
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

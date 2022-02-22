@@ -69,4 +69,6 @@ public class MyController implements ClientApiApi{
     public ResponseEntity<GetCustomerSecurityImageResponseDto> getSecurityImageByUserName(String username) {
        return securityImageService.getImageByUsername(username);
     }
+
+
 }

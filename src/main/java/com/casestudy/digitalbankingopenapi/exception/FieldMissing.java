@@ -1,10 +1,10 @@
 package com.casestudy.digitalbankingopenapi.exception;
 
-public class CustomerFieldMissing extends RuntimeException {
-    public CustomerFieldMissing(String field) {
+public class FieldMissing extends RuntimeException {
+    public FieldMissing(String field) {
         super("Customer " + field + " Field Missing");
     }
-    public CustomerFieldMissing() {
+    public FieldMissing() {
         super("Customer Field Missing");
     }
 }

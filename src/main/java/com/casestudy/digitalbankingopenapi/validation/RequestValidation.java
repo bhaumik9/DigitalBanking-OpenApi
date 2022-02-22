@@ -67,22 +67,22 @@ public class RequestValidation {
 
     private void validateMissingFields(CreateCustomerRequestDto customerDto) {
         if (customerDto.getUserName().isEmpty()) {
-            throw new CustomerFieldMissing("Username");
+            throw new FieldMissing("Username");
         }
         if (customerDto.getFirstName().isEmpty()) {
-            throw new CustomerFieldMissing("First Name");
+            throw new FieldMissing("First Name");
         }
         if (customerDto.getLastName().isEmpty()) {
-            throw new CustomerFieldMissing("Last Name");
+            throw new FieldMissing("Last Name");
         }
         if (Objects.isNull(customerDto.getEmail()) || customerDto.getEmail().isEmpty()) {
-            throw new CustomerFieldMissing("Email");
+            throw new FieldMissing("Email");
         }
         if (customerDto.getPhoneNumber().isEmpty()) {
-            throw new CustomerFieldMissing("Phone Number");
+            throw new FieldMissing("Phone Number");
         }
         if (Objects.isNull(customerDto.getPreferredLanguage()) || customerDto.getPreferredLanguage().toString().isEmpty()) {
-            throw new CustomerFieldMissing("Preferred Language");
+            throw new FieldMissing("Preferred Language");
         }
     }
 
@@ -141,12 +141,18 @@ public class RequestValidation {
         }
     }
 
-    public void validateExistingImage(String id) {
+    public void validateExistingImage(String id,Customer customer) {
         CustomerSecurityImages customerSecurityImage = customerSecurityImagesRepo.findByCustomerId(id);
         if(Objects.isNull(customerSecurityImage)){
             return;
         }else {
             customerSecurityImagesRepo.delete(customerSecurityImage);
+        }
+    }
+
+    public void validateOtpIsNullOrEmpty(String otp) {
+        if(Objects.isNull(otp) || otp.isEmpty()){
+            throw new FieldMissing("validate otp");
         }
     }
 }

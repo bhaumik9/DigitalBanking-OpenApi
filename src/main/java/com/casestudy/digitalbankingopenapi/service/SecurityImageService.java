@@ -37,15 +37,15 @@ public class SecurityImageService {
     public ResponseEntity<Void> addImageByUsername(String username, CreateCustomerSecurityImageRequestDto createCustomerSecurityImageRequestDto) {
         Customer customer = requestValidation.validateUserNameInDatabase(username, "security Image");
         SecurityImages securityImage = requestValidation.validateSecurityImage(createCustomerSecurityImageRequestDto);
-        requestValidation.validateExistingImage(customer.getId());
+        requestValidation.validateExistingImage(customer.getId(),customer);
         CustomerSecurityImages customerSecurityImages = new CustomerSecurityImages();
         customerSecurityImages.setCustomer(customer);
         customerSecurityImages.setSecurityImages(securityImage);
         customerSecurityImages.setSecurityImageCaption(createCustomerSecurityImageRequestDto.getSecurityImageCaption());
         customerSecurityImages.setCreatedOn(LocalDateTime.now());
         CustomerSecurityImages save = customerSecurityImagesRepo.save(customerSecurityImages);
-        customer.setCustomerSecurityImage(save);
-        customerRepo.save(customer);
+//        customer.setCustomerSecurityImage(save);
+//        customerRepo.save(customer);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

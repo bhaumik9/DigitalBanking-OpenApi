@@ -69,7 +69,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<CustomerSecurityQuestions> customerSecurityQuestionsList;
 
-    @OneToOne
+    @OneToOne(mappedBy = "customer")
     private CustomerSecurityImages customerSecurityImage;
 
     public Customer(String userName, String firstName, String lastName, String email, String phoneNumber, String preferredLanguage) {
@@ -79,10 +79,6 @@ public class Customer {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.preferredLanguage = preferredLanguage;
-    }
-
-    public CustomerDto toCustomerDto() {
-        return new CustomerDto(this.userName, this.firstName, this.lastName, this.phoneNumber, this.email, this.preferredLanguage);
     }
 
     @Override
