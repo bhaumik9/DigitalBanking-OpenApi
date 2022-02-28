@@ -12,7 +12,6 @@ import com.casestudy.digitalbankingopenapi.validation.RequestValidation;
 import lombok.NoArgsConstructor;
 import openapi.model.InitiateOtpRequestDto;
 import openapi.model.ValidateOtpRequestDto;
-import org.hibernate.boot.model.source.internal.hbm.AttributesHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -101,7 +100,7 @@ public class CustomerOtpService {
             retries++;
             customerOtp.setRetries(retries);
             customerOtpRepo.save(customerOtp);
-            throw new InvalidFieldException("invalidate otp");
+            throw new InvalidFieldException("invalidate otp", "validate otp");
         }
         if(retries>2){
             throw new AttemptsFailedException("You have exceeded your attempts");

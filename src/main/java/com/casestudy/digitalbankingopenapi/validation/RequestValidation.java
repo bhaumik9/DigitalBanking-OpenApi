@@ -34,7 +34,7 @@ public class RequestValidation {
     }
 
     public void validateInitiateOtpRequest(InitiateOtpRequestDto customerOtpDto) {
-        validateUserNameInDatabase(customerOtpDto.getUserName(), "otp");
+        validateUserNameInDatabase(customerOtpDto.getUserName(), "initiate otp");
         isValidTemplateId(customerOtpDto.getTemplateId());
     }
 
@@ -53,15 +53,15 @@ public class RequestValidation {
         if (Objects.isNull(templateId) || templateId.isEmpty() || templateId.equals(REGISTRATION) || templateId.equals(LOGIN)) {
             return;
         }
-        throw new InvalidFieldException("Invalid Template Id");
+        throw new InvalidFieldException("Invalid Template Id", "initiate otp");
     }
 
     public void validateCustomer(CreateCustomerRequestDto customerDto) {
         validateMissingFields(customerDto);
-        validateEmail(customerDto.getEmail());
-        validatePhoneNumber(customerDto.getPhoneNumber());
-        validateUsernameByRegex(customerDto.getUserName());
-        validatePreferredLanguage(customerDto.getPreferredLanguage().toString());
+        validateEmail(customerDto.getEmail(),"add customer");
+        validatePhoneNumber(customerDto.getPhoneNumber(),"add customer");
+        validateUsernameByRegex(customerDto.getUserName(),"add customer");
+        validatePreferredLanguage(customerDto.getPreferredLanguage().toString(),"add customer");
         validateDuplicateUsername(customerDto.getUserName());
     }
 
@@ -86,30 +86,30 @@ public class RequestValidation {
         }
     }
 
-    public boolean validateUsernameByRegex(String username) {
+    public boolean validateUsernameByRegex(String username,String type) {
         if (!username.matches("^[A-Za-z][A-Za-z0-9_]{7,29}$")) {
-            throw new InvalidFieldException("Invalid Username");
+            throw new InvalidFieldException("Invalid Username", type);
         }
         return Boolean.TRUE;
     }
 
-    public boolean validatePhoneNumber(String phoneNumber) {
+    public boolean validatePhoneNumber(String phoneNumber,String type) {
         if (!phoneNumber.matches("\\d{10}")) {
-            throw new InvalidFieldException("Invalid Phone Number");
+            throw new InvalidFieldException("Invalid Phone Number", type);
         }
         return Boolean.TRUE;
     }
 
-    public boolean validateEmail(String email) {
+    public boolean validateEmail(String email,String type) {
         if (!email.matches("[\\w+.]*@\\w+.[com|in]{2,3}")) {
-            throw new InvalidFieldException("Invalid Email");
+            throw new InvalidFieldException("Invalid Email", type);
         }
         return Boolean.TRUE;
     }
 
-    public boolean validatePreferredLanguage(String preferredLanguage) {
+    public boolean validatePreferredLanguage(String preferredLanguage,String type) {
         if (!((preferredLanguage.equals("EN")) || (preferredLanguage.equals("DE")) || (preferredLanguage.equals("FR")))) {
-            throw new InvalidFieldException("Invalid Preferred Language");
+            throw new InvalidFieldException("Invalid Preferred Language", type);
         }
         return Boolean.TRUE;
     }
@@ -127,9 +127,9 @@ public class RequestValidation {
         }
     }
 
-    public SecurityImages validateSecurityImage(CreateCustomerSecurityImageRequestDto createCustomerSecurityImageRequestDto) {
+    public SecurityImages validateSecurityImage(CreateCustomerSecurityImageRequestDto createCustomerSecurityImageRequestDto,String type) {
         if (Objects.isNull(createCustomerSecurityImageRequestDto.getSecurityImageCaption()) || createCustomerSecurityImageRequestDto.getSecurityImageCaption().isEmpty() || createCustomerSecurityImageRequestDto.getSecurityImageCaption().length() < 3) {
-            throw new InvalidFieldException("Security Image Caption Invalid");
+            throw new InvalidFieldException("Security Image Caption Invalid", type);
         }
         Optional<SecurityImages> optionalSecurityImage = securityImageRepo.findById(createCustomerSecurityImageRequestDto.getSecurityImageId());
         SecurityImages securityImage;
@@ -137,7 +137,7 @@ public class RequestValidation {
             securityImage = optionalSecurityImage.get();
             return securityImage;
         }else {
-            throw new NotFoundException("Security Image Not Found","Image");
+            throw new NotFoundException("Security Image Not Found","ImageNotFound");
         }
     }
 

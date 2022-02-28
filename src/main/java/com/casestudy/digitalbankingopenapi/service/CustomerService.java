@@ -1,7 +1,6 @@
 package com.casestudy.digitalbankingopenapi.service;
 
 import com.casestudy.digitalbankingopenapi.controller.ExternalController;
-import com.casestudy.digitalbankingopenapi.dto.AgeResponseDto;
 import com.casestudy.digitalbankingopenapi.entity.Customer;
 import com.casestudy.digitalbankingopenapi.enums.CustomerStatus;
 import com.casestudy.digitalbankingopenapi.mapper.CustomerMapperImpl;
@@ -55,25 +54,25 @@ public class CustomerService {
         return customerMapper.entityToResponseDto(savedCustomer);
     }
 
-    public ResponseEntity<Void> update(PatchCustomerRequestDto customerDto, String username) {
-        Customer customer = requestValidation.validateUserNameInDatabase(username, "update");
-        if (!(Objects.isNull(customerDto.getFirstName()) || customerDto.getFirstName().isEmpty())) {
-            customer.setFirstName(customerDto.getFirstName());
+    public ResponseEntity<Void> update(PatchCustomerRequestDto patchCustomerRequestDto, String username) {
+        Customer customer = requestValidation.validateUserNameInDatabase(username, "update customer");
+        if (!(Objects.isNull(patchCustomerRequestDto.getFirstName()) || patchCustomerRequestDto.getFirstName().isEmpty())) {
+            customer.setFirstName(patchCustomerRequestDto.getFirstName());
         }
-        if (!(Objects.isNull(customerDto.getLastName()) || customerDto.getLastName().isEmpty())) {
-            customer.setLastName(customerDto.getLastName());
+        if (!(Objects.isNull(patchCustomerRequestDto.getLastName()) || patchCustomerRequestDto.getLastName().isEmpty())) {
+            customer.setLastName(patchCustomerRequestDto.getLastName());
         }
-        if ((!Objects.isNull(customerDto.getPhoneNumber()) && !customerDto.getPhoneNumber().isEmpty()) && requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())) {
-            customer.setPhoneNumber(customerDto.getPhoneNumber());
+        if ((!Objects.isNull(patchCustomerRequestDto.getPhoneNumber()) && !patchCustomerRequestDto.getPhoneNumber().isEmpty()) && requestValidation.validatePhoneNumber(patchCustomerRequestDto.getPhoneNumber(),"update customer")) {
+            customer.setPhoneNumber(patchCustomerRequestDto.getPhoneNumber());
         }
-        if ((!Objects.isNull(customerDto.getEmail()) && !customerDto.getEmail().isEmpty()) && requestValidation.validateEmail(customerDto.getEmail())) {
-            customer.setEmail(customerDto.getEmail());
+        if ((!Objects.isNull(patchCustomerRequestDto.getEmail()) && !patchCustomerRequestDto.getEmail().isEmpty()) && requestValidation.validateEmail(patchCustomerRequestDto.getEmail(),"update customer")) {
+            customer.setEmail(patchCustomerRequestDto.getEmail());
         }
-        if ((!Objects.isNull(customerDto.getPreferredLanguage()) && customerDto.getPreferredLanguage().toString().isEmpty()) && requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())) {
-            customer.setPreferredLanguage(customerDto.getPreferredLanguage().toString());
+        if ((!Objects.isNull(patchCustomerRequestDto.getPreferredLanguage()) && patchCustomerRequestDto.getPreferredLanguage().toString().isEmpty()) && requestValidation.validatePreferredLanguage(patchCustomerRequestDto.getPreferredLanguage().toString(),"update customer")) {
+            customer.setPreferredLanguage(patchCustomerRequestDto.getPreferredLanguage().toString());
         }
-        if ((!Objects.isNull(customerDto.getStatus()) && !customerDto.getStatus().toString().isEmpty()) && requestValidation.validateStatus(customerDto.getStatus().toString())) {
-            customer.setStatus(customerDto.getStatus().toString());
+        if ((!Objects.isNull(patchCustomerRequestDto.getStatus()) && !patchCustomerRequestDto.getStatus().toString().isEmpty()) && requestValidation.validateStatus(patchCustomerRequestDto.getStatus().toString())) {
+            customer.setStatus(patchCustomerRequestDto.getStatus().toString());
         }
         customerRepo.save(customer);
         return new ResponseEntity<>(HttpStatus.OK);

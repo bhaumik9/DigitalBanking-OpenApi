@@ -8,7 +8,7 @@ import lombok.Setter;
 public class MandatoryFieldMissingException extends RuntimeException{
     final String type;
     public MandatoryFieldMissingException(String type){
-        super("Mandatory Field Missing for "+type);
+        super("Mandatory Field Missing for "+type+" request");
         this.type=type;
     }
 }

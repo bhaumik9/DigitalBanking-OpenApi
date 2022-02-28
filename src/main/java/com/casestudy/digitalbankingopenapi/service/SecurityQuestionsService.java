@@ -38,7 +38,7 @@ public class SecurityQuestionsService {
     }
 
     public ResponseEntity<GetCustomerSecurityQuestionResponseDto> getSecurityQuestionsByUsername(String username) {
-        Customer customer = requestValidation.validateUserNameInDatabase(username, "securityQuestion");
+        Customer customer = requestValidation.validateUserNameInDatabase(username, "customerSecurityQuestion");
         List<CustomerSecurityQuestions> customerSecurityQuestionsList = customer.getCustomerSecurityQuestionsList();
         if (customerSecurityQuestionsList.isEmpty()) {
             throw new NotFoundException("Empty List","customer security Question");

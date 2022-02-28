@@ -9,12 +9,15 @@ import openapi.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Objects;
 
 @RestController
 @RequestMapping("/customer-service")
-public class MyController implements ClientApiApi{
+@Component
+public class MyController implements ClientApiApi {
 
     private CustomerService customerService;
     private CustomerOtpService customerOtpService;
@@ -28,6 +31,7 @@ public class MyController implements ClientApiApi{
         this.securityQuestionsService = securityQuestionsService;
         this.securityImageService = securityImageService;
     }
+
     @Override
     public ResponseEntity<Void> initiateOtp(@RequestBody InitiateOtpRequestDto initiateOtpRequestDto) {
         return customerOtpService.initiateOtpRequest(initiateOtpRequestDto);
@@ -62,12 +66,12 @@ public class MyController implements ClientApiApi{
 
     @Override
     public ResponseEntity<Void> saveSecurityImageById(String username, CreateCustomerSecurityImageRequestDto createCustomerSecurityImageRequestDto) {
-        return securityImageService.addImageByUsername(username,createCustomerSecurityImageRequestDto);
+        return securityImageService.addImageByUsername(username, createCustomerSecurityImageRequestDto);
     }
 
     @Override
     public ResponseEntity<GetCustomerSecurityImageResponseDto> getSecurityImageByUserName(String username) {
-       return securityImageService.getImageByUsername(username);
+        return securityImageService.getImageByUsername(username);
     }
 
 

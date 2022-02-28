@@ -81,8 +81,8 @@ class CustomerServiceTest {
         String username = "bhaumik9";
         Customer customer = new Customer();
         Mockito.when(requestValidation.validateUserNameInDatabase(username, "update")).thenReturn(customer);
-        Mockito.when(requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())).thenReturn(Boolean.TRUE);
-        Mockito.when(requestValidation.validateEmail(customerDto.getEmail())).thenReturn(Boolean.TRUE);
+        Mockito.when(requestValidation.validatePhoneNumber(customerDto.getPhoneNumber(),"update customer")).thenReturn(Boolean.TRUE);
+        Mockito.when(requestValidation.validateEmail(customerDto.getEmail(),"update customer")).thenReturn(Boolean.TRUE);
         customerService.update(customerDto, username);
         Mockito.verify(customerRepo).save(customer);
 
@@ -125,7 +125,7 @@ class CustomerServiceTest {
         String username = "demo";
         Customer customer = new Customer();
         Mockito.when(requestValidation.validateUserNameInDatabase(username, "update")).thenReturn(customer);
-        Mockito.when(requestValidation.validatePhoneNumber(customerDto.getPhoneNumber())).thenThrow(InvalidFieldException.class);
+        Mockito.when(requestValidation.validatePhoneNumber(customerDto.getPhoneNumber(),"update customer")).thenThrow(InvalidFieldException.class);
         Assertions.assertThrows(InvalidFieldException.class, () -> customerService.update(customerDto, username));
     }
 
@@ -140,7 +140,7 @@ class CustomerServiceTest {
         String username = "demo";
         Customer customer = new Customer();
         Mockito.when(requestValidation.validateUserNameInDatabase(username, "update")).thenReturn(customer);
-        Mockito.when(requestValidation.validateEmail(customerDto.getEmail())).thenThrow(InvalidFieldException.class);
+        Mockito.when(requestValidation.validateEmail(customerDto.getEmail(),"update customer")).thenThrow(InvalidFieldException.class);
         Assertions.assertThrows(InvalidFieldException.class, () -> customerService.update(customerDto, username));
     }
 
@@ -155,7 +155,7 @@ class CustomerServiceTest {
         String username = "demo";
         Customer customer = new Customer();
         Mockito.when(requestValidation.validateUserNameInDatabase(username, "update")).thenReturn(customer);
-        Mockito.when(requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString())).thenThrow(InvalidFieldException.class);
+        Mockito.when(requestValidation.validatePreferredLanguage(customerDto.getPreferredLanguage().toString(),"update customer")).thenThrow(InvalidFieldException.class);
         Assertions.assertThrows(InvalidFieldException.class, () -> customerService.update(customerDto, username));
     }
 
